@@ -15,21 +15,20 @@
             <div class="header">
                 <div class="row">
                     <div class="col-sm-8">
-                            <h3>Welcome to <span>Bay max </span></h3>
+                            <h3>Welcome to <span>Baymax</span></h3>
                             <p>You’re about to use a short (3 min), safe and anonymous health checkup. Your answers will be carefully analyzed and you’ll learn about possible causes of your symptoms.</p>            
                     </div>
                     <div class="col-sm-4 welcome-doctor">
-                        <img src="{{ url_for('static', filename='images/doctor-m.png') }}" alt="doctor">
+                        <img src="{{ url_for('static', filename='images/baymaxx.png') }}" alt="doctor">
                     </div>
                 </div>
                 <hr>
                 <button class="btn btn-primary">
-                    <a href="/symps">Next</a>
-                    <!-- {% if session['email'] %}
+                    {% if session['email'] %}
                     <a href="/symps">Next</a>
                     {% else %}
                     <a href="/info">Next</a>
-                    {% endif %} -->
+                    {% endif %}
                 </button>
             </div>
         </div>

@@ -35,7 +35,7 @@ def symptoms():
         session['visitor'] = 'visitor'
         session['sex'] = request.form.get('gender','udefined')
         if session['sex'] == "udefined":
-            flash("Please select your gender!"+"danger")
+            flash(f'Please select your gender!','danger')
             return redirect(url_for('home'))
         session['age'] = request.form['age']
         return render_template('symps.html', symptom = symptom)
@@ -52,7 +52,7 @@ def questions():
         return redirect(url_for('info'))
     symptoms = request.form.getlist('sym[]')
     if len(symptoms) <= 1:
-        flash("Please select atleast 2 symptoms!"+"danger")
+        flash(f'Please select atleast 2 symptoms!','danger')
         return redirect(url_for('home'))
     myQuestions1,myQuestions2 = Question_Maker.fillter(symptoms)
     if len(myQuestions2) > 0:
@@ -151,7 +151,7 @@ def diagnosis(count):
         return render_template('diagnosis.html',diseases=finalDiseases,percent=finalPercent,
                 symptoms=symptoms,diseasesInfo=diseasesInfo,diseasesSyms=finalDisSyms,diseasesTips=diseasesTips,specialist=specialist)
     else:
-        flash("Sorry your symptoms dosn\'t match any disease, try again!"+"danger")
+        flash(f'Sorry your symptoms dosn\'t match any disease, try again!','danger')
         return redirect(url_for('home'))
 
 
@@ -178,7 +178,7 @@ def feedback():
         cur.execute(query_string, (usermail,msg,rate))
         con.commit()
         cur.close()
-        flash("Feedback sent"+"success")
+        flash(f'Feedback sent','success')
         return redirect(url_for('home'))
 
 def getDiseaseData(disease):
@@ -239,52 +239,52 @@ def getSpecialist(organ):
         return specialist[0][0]
     return ""
 
-# @app.route('/register', methods=['GET','POST'])
-# def register():
-#     form = RegistrationForm()
-#     if request.method == 'GET' and 'email' in session:
-#         return redirect(url_for('home'))
-#     if request.method == 'POST':
-#         if form.validate_on_submit():
-#             con = sqlite3.connect("mydatabase.db")
-#             cur = con.cursor()
-#             query_string = """SELECT * FROM user WHERE email=?"""
-#             cur.execute(query_string, (form.email.data,))
-#             users = cur.fetchall()
-#             if len(users) > 0:
-#                 flash("Email used before!"+"danger")
-#                 return render_template('register.html', form=form)
-#             query_string = """INSERT INTO user (firstName,lastName,email,sex,age,password,accountType) VALUES(?,?,?,?,?,?,?)"""
-#             cur.execute(query_string, (form.firstName.data,form.lastName.data,form.email.data,
-#                                                     form.gender.data,form.age.data,form.password.data,form.acc_type.data))
-#             con.commit()
-#             con.close()
-#             flash(f'Account created for {form.firstName.data}!','success')
-#             return redirect(url_for('login'))
-#     return render_template('register.html', form=form)
+@app.route('/register', methods=['GET','POST'])
+def register():
+    form = RegistrationForm()
+    if request.method == 'GET' and 'email' in session:
+        return redirect(url_for('home'))
+    if request.method == 'POST':
+        if form.validate_on_submit():
+            con = sqlite3.connect("mydatabase.db")
+            cur = con.cursor()
+            query_string = """SELECT * FROM user WHERE email=?"""
+            cur.execute(query_string, (form.email.data,))
+            users = cur.fetchall()
+            if len(users) > 0:
+                flash(f'Email used before!','danger')
+                return render_template('register.html', form=form)
+            query_string = """INSERT INTO user (firstName,lastName,email,sex,age,password,accountType) VALUES(?,?,?,?,?,?,?)"""
+            cur.execute(query_string, (form.firstName.data,form.lastName.data,form.email.data,
+                                                    form.gender.data,form.age.data,form.password.data,form.acc_type.data))
+            con.commit()
+            con.close()
+            flash(f'Account created for {form.firstName.data}!','success')
+            return redirect(url_for('login'))
+    return render_template('register.html', form=form)
 
-# @app.route('/edit-profile', methods=['POST','GET'])
-# def edit_profile():
-#     form = RegistrationForm()
-#     if request.method == 'GET' and 'email' in session:
-#         con = sqlite3.connect("mydatabase.db")
-#         cur = con.cursor()
-#         query_string = """SELECT * FROM user WHERE email =?"""
-#         cur.execute(query_string, (session['email'],))
-#         user = cur.fetchall()
-#         con.close()
-#         return render_template('edit-profile.html',form=form,uFirstname=user[0][1],uLastname=user[0][2],
-#                         uEmail=user[0][3],uSex=user[0][5],uAge=user[0][6],uAccType=user[0][7])
-#     if request.method == 'POST':
-#         con = sqlite3.connect("mydatabase.db")
-#         cur = con.cursor()
-#         query_string = """UPDATE user SET firstName=?,lastName=?,age=?,password=? WHERE email=?"""
-#         cur.execute(query_string, (request.form['firstName'],request.form['lastName'],request.form['age'],request.form['password'],session['email']))
-#         con.commit()
-#         flash(f'Account updated!','success')
-#         return redirect(url_for('home'))
+@app.route('/edit-profile', methods=['POST','GET'])
+def edit_profile():
+    form = RegistrationForm()
+    if request.method == 'GET' and 'email' in session:
+        con = sqlite3.connect("mydatabase.db")
+        cur = con.cursor()
+        query_string = """SELECT * FROM user WHERE email =?"""
+        cur.execute(query_string, (session['email'],))
+        user = cur.fetchall()
+        con.close()
+        return render_template('edit-profile.html',form=form,uFirstname=user[0][1],uLastname=user[0][2],
+                        uEmail=user[0][3],uSex=user[0][5],uAge=user[0][6],uAccType=user[0][7])
+    if request.method == 'POST':
+        con = sqlite3.connect("mydatabase.db")
+        cur = con.cursor()
+        query_string = """UPDATE user SET firstName=?,lastName=?,age=?,password=? WHERE email=?"""
+        cur.execute(query_string, (request.form['firstName'],request.form['lastName'],request.form['age'],request.form['password'],session['email']))
+        con.commit()
+        flash(f'Account updated!','success')
+        return redirect(url_for('home'))
     
-#     return redirect(url_for('home'))
+    return redirect(url_for('home'))
     
 
 
@@ -323,52 +323,52 @@ def add_disease():
     return redirect(url_for('home'))
 
 
-# @app.route('/login', methods=['GET','POST'])
-# def login():
-#     form = LoginForm()
-#     if request.method == 'GET' and 'email' in session:
-#         return redirect(url_for('home'))
-#     if request.method == 'POST':
-#         session.pop('visitor', None)
-#         if form.validate_on_submit():
-#             con = sqlite3.connect("mydatabase.db")
-#             cur = con.cursor()
-#             query_string = """SELECT * FROM user WHERE email=? AND password=?"""
-#             cur.execute(query_string, (form.email.data,form.password.data,))
-#             users = cur.fetchall()
-#             con.close()
-#             if len(users) > 0:
-#                 session['email'] = form.email.data
-#                 session['firstname'] = users[0][1]
-#                 session['lastname'] = users[0][2]
-#                 session['sex'] = users[0][5]
-#                 session['age'] = users[0][6]
-#                 session['accType'] = users[0][7]
-#                 flash(f'Welcome back {users[0][1]}!','success')
-#                 return redirect(url_for('home'))
-#             else :
-#                 flash(f'Login Faild!','danger')
-#     return render_template('login.html', form=form)
+@app.route('/login', methods=['GET','POST'])
+def login():
+    form = LoginForm()
+    if request.method == 'GET' and 'email' in session:
+        return redirect(url_for('home'))
+    if request.method == 'POST':
+        session.pop('visitor', None)
+        if form.validate_on_submit():
+            con = sqlite3.connect("mydatabase.db")
+            cur = con.cursor()
+            query_string = """SELECT * FROM user WHERE email=? AND password=?"""
+            cur.execute(query_string, (form.email.data,form.password.data,))
+            users = cur.fetchall()
+            con.close()
+            if len(users) > 0:
+                session['email'] = form.email.data
+                session['firstname'] = users[0][1]
+                session['lastname'] = users[0][2]
+                session['sex'] = users[0][5]
+                session['age'] = users[0][6]
+                session['accType'] = users[0][7]
+                flash(f'Welcome back {users[0][1]}!','success')
+                return redirect(url_for('home'))
+            else :
+                flash(f'Login Faild!','danger')
+    return render_template('login.html', form=form)
 
-# @app.route('/logout')
-# def logout():
-#     session.pop('email', None)
-#     return redirect(url_for('home'))
+@app.route('/logout')
+def logout():
+    session.pop('email', None)
+    return redirect(url_for('home'))
 
-# @app.route('/doctor-contacts',methods=['GET'])
-# def doctor_contacts():
-#     if 'email' in session:
-#         con = sqlite3.connect("mydatabase.db")
-#         cur = con.cursor()
-#         query_string = """SELECT firstName,lastName,email,specialization FROM user WHERE accountType = 'doctor'"""
-#         cur.execute(query_string)
-#         doctors = cur.fetchall()
-#         con.close()
-#         if len(doctors) > 0:
-#             return render_template('doctor-contacts.html',doctors=doctors)
-#         else:
-#             flash(f'Sorry no available doctor right now!','danger')        
-#     return redirect(url_for('home'))
+@app.route('/doctor-contacts',methods=['GET'])
+def doctor_contacts():
+    if 'email' in session:
+        con = sqlite3.connect("mydatabase.db")
+        cur = con.cursor()
+        query_string = """SELECT firstName,lastName,email,specialization FROM user WHERE accountType = 'doctor'"""
+        cur.execute(query_string)
+        doctors = cur.fetchall()
+        con.close()
+        if len(doctors) > 0:
+            return render_template('doctor-contacts.html',doctors=doctors)
+        else:
+            flash(f'Sorry no available doctor right now!','danger')        
+    return redirect(url_for('home'))
 
 @app.route('/search-disease',methods=['POST'])
 def search_disease():
