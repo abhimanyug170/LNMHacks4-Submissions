@@ -17,9 +17,9 @@ In the top-level directory:
 
 ### Key Python Modules Used
 
-Flask: micro-framework for web application development
-Jinga2 - templating engine
-SQLite - ORM (Object Relational Mapper)
-Flask-WTF - simplifies forms
+* Flask: micro-framework for web application development
+* Jinga2 - templating engine
+* SQLite - ORM (Object Relational Mapper)
+* Flask-WTF - simplifies forms
 
 This application is written using Python 3.6.
